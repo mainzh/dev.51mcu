@@ -1,0 +1,49 @@
+C51 COMPILER V9.54   MAIN                                                                  09/10/2024 10:47:36 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\_EmbeddedSystemTool\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          /**
+   5            *@brief 按键按下再松开，改变LED状态(按键消抖)
+   6            *@param 无
+   7            *@retval 无
+   8            *if(P3_1 == 0){ //若P31为0，则判断按键K1:P31按下
+   9               Delay(20); //延时20ms，按键按下消抖
+  10               while(P3_1 == 0); //当按键仍按下，就执行空循环，否则判断按键松开，跳过此循
+             -环
+  11               Delay(20); //延时20ms，按键松开消抖
+  12               P2_0 = ~P2_0; //P20位取反，改变LED状态
+  13             }
+  14            */
+  15          void main(){
+  16   1        while(1){
+  17   2          if(P3_1 == 0){
+  18   3            Delay(20);
+  19   3            while(P3_1 == 0);
+  20   3            Delay(20);
+  21   3            P2_0 = ~P2_0;
+  22   3          }
+  23   2        }
+  24   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     24    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,97 @@
+C51 COMPILER V9.54   MAIN                                                                  09/10/2024 11:43:05 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\_EmbeddedSystemTool\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "MatrixKey.h"
+   2          #include "LCD1602.h"
+   3          
+   4          /**
+   5            *@brief 矩阵键盘输入密码
+   6            *@param 无
+   7            *@retval 无
+   8            *if(KeyNumber <= 10) //若按下S1——S10按键，输入密码
+   9            *if(count < 4) //如果输入次数<4，执行下面的程序，输入超过4次，则无效
+  10            *PassWord *= 10; //密码左移一位
+  11             初始密码0000
+  12                 输入1
+  13                     0000*10 = 0000
+  14                     0000+1  = 0001
+  15                 输入2
+  16                     0001*10 = 0010
+  17                     0010+2  = 0012
+  18                 输入3
+  19                     0012*10 = 0120
+  20                     0120+3  = 0123
+  21            *PassWord += KeyNumber % 10; //获取一位密码，若为S10则将S10赋值为0
+  22            *if(KeyNumber = 11) //若按下S11按键，确认
+  23            *if(KeyNumber = 12) //若按下S12按键，取消
+  24            */
+  25          unsigned char KeyNumber;
+  26          unsigned int PassWord,count;
+  27          void main()
+  28          {
+  29   1          LCD_Init();
+  30   1          LCD_ShowString(1,1,"MatrixKey:");
+  31   1          while(1)
+  32   1          {
+  33   2              KeyNumber = MatrixKey();
+  34   2              if(KeyNumber)
+  35   2              {
+  36   3                  if(KeyNumber <= 10)
+  37   3                  {
+  38   4                      if(count < 4)
+  39   4                      {
+  40   5                      PassWord *= 10;
+  41   5                      PassWord += KeyNumber % 10;
+  42   5                      count++; //计次+1
+  43   5                      }
+  44   4                      LCD_ShowNum(2,1,PassWord,4); //更新显示
+  45   4                  }
+  46   3                  if(KeyNumber == 11)
+  47   3                  {
+  48   4                      if(PassWord == 2345) //如果密码 = 正确密码
+  49   4                      {
+  50   5                          LCD_ShowString(1,14,"OK "); //显示OK
+  51   5                          PassWord = 0; //密码清零
+  52   5                          count = 0; //计次清零
+  53   5                          LCD_ShowNum(2,1,PassWord,4); //更新显示
+  54   5                      }
+C51 COMPILER V9.54   MAIN                                                                  09/10/2024 11:43:05 PAGE 2   
+
+  55   4                      else
+  56   4                      {
+  57   5                          LCD_ShowString(1,14,"ERR"); //显示ERR
+  58   5                          PassWord = 0; //密码清零
+  59   5                          count = 0; //计次清零
+  60   5                          LCD_ShowNum(2,1,PassWord,4); //更新显示
+  61   5                      }
+  62   4                  }
+  63   3                  if(KeyNumber == 12)
+  64   3                  {
+  65   4                      PassWord = 0; //密码清零
+  66   4                      count = 0; //计次清零
+  67   4                      LCD_ShowNum(2,1,PassWord,4); //更新显示
+  68   4                  }
+  69   3              }
+  70   2          }
+  71   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    189    ----
+   CONSTANT SIZE    =     19    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

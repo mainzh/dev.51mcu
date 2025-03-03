@@ -1,0 +1,86 @@
+C51 COMPILER V9.54   MAIN                                                                  09/10/2024 14:49:40 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\_EmbeddedSystemTool\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Timer0.h"
+   3          #include "Key.h"
+   4          #include <INTRINS.H>
+   5          
+   6          /**
+   7            *@brief 定时器_按键控制LED流水灯模式
+   8            *@param 无
+   9            *@retval 无
+  10            *按键按下从1到0，0到1
+  11             if(KeyNum == 1)
+  12                  {
+  13                    LEDMode ++;
+  14                    if(LEDMode >= 2) LEDMode = 0;
+  15                  }
+  16            */
+  17          unsigned char KeyNum,LEDMode;
+  18          void main()
+  19          {
+  20   1        P2 = 0xfe;
+  21   1        Timer0_Init();
+  22   1        while(1)
+  23   1          {
+  24   2            KeyNum = Key();
+  25   2            if(KeyNum)
+  26   2            {
+  27   3              if(KeyNum == 1)
+  28   3              {
+  29   4                LEDMode ++;
+  30   4                if(LEDMode >= 2) LEDMode = 0;
+  31   4              }
+  32   3            }
+  33   2          }
+  34   1      }
+  35          
+  36          /**
+  37            *@brief 定时器_按键控制LED流水灯模式
+  38            *@param 无
+  39            *@retval 无
+  40            *_cror_循环右移_crol_循环左移
+  41             **unsigned char a = 0x01; //0000 0001
+  42               a = _cror_(a,1); //a=0x80 1000 0000
+  43             循环左右移：将位移动到最高/低位，循环到最低/高位
+  44             按位左右移：将位移动到最高/低位，移除后用0替代空位
+  45          */
+  46          void Timer0_Rountine() interrupt 1
+  47          {
+  48   1          static unsigned int T0Count;
+  49   1          TL0 = 0x18;
+  50   1          TH0 = 0xFC;
+  51   1          T0Count ++;
+  52   1          if(T0Count >= 500)
+  53   1          {
+  54   2              T0Count = 0;
+C51 COMPILER V9.54   MAIN                                                                  09/10/2024 14:49:40 PAGE 2   
+
+  55   2              if(LEDMode == 0)
+  56   2                P2 = _crol_(P2,1);
+  57   2              if(LEDMode == 1)
+  58   2                P2 = _cror_(P2,1);
+  59   2          }
+  60   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    116    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
